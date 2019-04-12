@@ -1,20 +1,21 @@
-import React, { Component } from "react";
-import { MdInsertDriveFile } from "react-icons/md";
-import "./styles.css";
-import logo from "../../assets/logo.svg";
-import api from "../../services/api";
-import { distanceInWords } from "date-fns";
-import pt from "date-fns/locale/pt";
-import Dropzone from "react-dropzone";
-import socket from "socket.io-client";
+import React, { Component } from 'react';
+import { MdInsertDriveFile } from 'react-icons/md';
+import './styles.css';
+import { distanceInWords } from 'date-fns';
+import pt from 'date-fns/locale/pt';
+import Dropzone from 'react-dropzone';
+import socket from 'socket.io-client';
+import api from '../../services/api';
+import logo from '../../assets/logo.svg';
 
 export default class Box extends Component {
-  //metodos de ciclos de vida, disparado automaticamente quando o usuario entra na tela
+  // metodos de ciclos de vida, disparado automaticamente quando o usuario entra na tela
   state = {
-    box: {}
+    box: {},
   };
+
   async componentDidMount() {
-      this.subscribeToNewFiles();
+    this.subscribeToNewFiles();
     const box = this.props.match.params.id;
     const response = await api.get(`boxes/${box}`);
 
@@ -22,27 +23,28 @@ export default class Box extends Component {
   }
 
   subscribeToNewFiles = () => {
-      const box = this.props.match.params.id;
-      const io = socket("https://omnistack-backend.herokuapp.com");
+    const box = this.props.match.params.id;
+    const io = socket('https://omnistack-backend.herokuapp.com');
 
-      io.emit("connectRoom", box);
+    io.emit('connectRoom', box);
 
-      io.on("file", data =>{
-          this.setState({
-              box: {...this.state.box, files: [data, ...this.state.box.files]}
-          })
-      })
-  }
+    io.on('file', (data) => {
+      this.setState({
+        box: { ...this.state.box, files: [data, ...this.state.box.files] },
+      });
+    });
+  };
 
-  handleUpload = files => {
-    files.forEach(file => {
+  handleUpload = (files) => {
+    files.forEach((file) => {
       const data = new FormData();
+
       const box = this.props.match.params.id;
-      data.append("file", file);
+      data.append('file', file);
 
       api.post(`boxes/${box}/files`, data);
 
-      //console.log(file);
+      // console.log(file);
     });
   };
 
@@ -55,7 +57,7 @@ export default class Box extends Component {
         </header>
 
         <Dropzone onDropAccepted={this.handleUpload}>
-          {//conteudo vai ser uma função
+          {// conteudo vai ser uma função
           ({ getRootProps, getInputProps }) => (
             <div className="upload" {...getRootProps()}>
               <input {...getInputProps()} />
@@ -65,17 +67,18 @@ export default class Box extends Component {
         </Dropzone>
 
         <ul>
-          {this.state.box.files &&
-            this.state.box.files.map(file => (
+          {this.state.box.files
+            && this.state.box.files.map(file => (
               <li key={file._id}>
                 <a className="fileInfo" href={file.url} target="_blank">
                   <MdInsertDriveFile size={24} color="#A5cfff" />
                   <strong>{file.title}</strong>
                 </a>
                 <span>
-                  há{" "}
+                  há
+                  {' '}
                   {distanceInWords(file.createdAt, new Date(), {
-                    locale: pt
+                    locale: pt,
                   })}
                 </span>
               </li>
