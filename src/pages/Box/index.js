@@ -52,7 +52,9 @@ export default class Box extends Component {
     return (
       <div id="box-container">
         <header>
-          <img src={logo} alt="" />
+          <a href="https://kelvin-dropbox.herokuapp.com">
+            <img src={logo} alt="" />
+          </a>
           <h1>{this.state.box.title}</h1>
         </header>
 
