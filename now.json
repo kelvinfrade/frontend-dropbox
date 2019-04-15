@@ -1,6 +1,6 @@
 {
-  "version": 2,
-  "name": "my-react-app",
+  "version": 1,
+  "name": "dropbox",
   "builds": [
       { "src": "package.json", "use": "@now/static-build", "config": { "distDir": "build" } }
   ],
